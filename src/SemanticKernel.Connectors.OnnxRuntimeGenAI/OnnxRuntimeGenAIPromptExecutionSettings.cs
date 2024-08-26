@@ -28,7 +28,7 @@ public sealed class OnnxRuntimeGenAIPromptExecutionSettings : PromptExecutionSet
     private int _numBeams = 1;
     private int _noRepeatNgramSize = 0;
     private int _minLength = 0;
-    private int _maxLength = 200;
+    private int _maxLength = 30_000;
     private float _lengthPenalty = 1;
     private bool _earlyStopping = true;
     private bool _doSample = false;

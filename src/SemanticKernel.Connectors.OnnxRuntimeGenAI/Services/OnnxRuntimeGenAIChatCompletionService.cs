@@ -93,7 +93,7 @@ public sealed class OnnxRuntimeGenAIChatCompletionService : IChatCompletionServi
         {
             var img = Images.Load(promptResult.ImagePath);
             var inputTensors = _processor.ProcessImages(promptResult.Prompt, img);
-            generatorParams.SetSearchOption("max_length", 3072);
+            generatorParams.SetSearchOption("max_length", 30_000);
             generatorParams.SetInputs(inputTensors);
         }
 
