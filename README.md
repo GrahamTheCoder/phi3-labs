@@ -1,3 +1,5 @@
+This fork is just for my own use to allow running on GPU locally
+
 # Labs using Phi-3 and Phi-3-Vision
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](/LICENSE)
