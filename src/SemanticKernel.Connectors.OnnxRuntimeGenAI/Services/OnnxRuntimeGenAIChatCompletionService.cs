@@ -81,8 +81,6 @@ public sealed class OnnxRuntimeGenAIChatCompletionService : IChatCompletionServi
 
         var promptResult = GetPrompt(chatHistory, onnxRuntimeGenAIPromptExecutionSettings);
 
-        Generator generator;
-
         var generatorParams = new GeneratorParams(_model);
         ApplyPromptExecutionSettings(generatorParams, onnxRuntimeGenAIPromptExecutionSettings);
 
@@ -99,7 +97,7 @@ public sealed class OnnxRuntimeGenAIChatCompletionService : IChatCompletionServi
             generatorParams.SetInputs(inputTensors);
         }
 
-        generator = new Generator(_model, generatorParams);
+        using var generator = new Generator(_model, generatorParams);
 
 
         if (generator is not null)
