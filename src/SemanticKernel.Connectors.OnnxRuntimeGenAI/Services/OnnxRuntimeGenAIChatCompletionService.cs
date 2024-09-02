@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -107,13 +109,21 @@ public sealed class OnnxRuntimeGenAIChatCompletionService : IChatCompletionServi
 
                 yield return await Task.Run(() =>
                 {
-                    generator.ComputeLogits();
-                    generator.GenerateNextToken();
+                    try
+                    {
+                        generator.ComputeLogits();
+                        generator.GenerateNextToken();
 
-                    var outputTokens = generator.GetSequence(0);
-                    var newToken = outputTokens.Slice(outputTokens.Length - 1, 1);
-                    var output = _tokenizer.Decode(newToken);
-                    return output;
+                        var outputTokens = generator.GetSequence(0);
+                        var newToken = outputTokens.Slice(outputTokens.Length - 1, 1);
+                        var output = _tokenizer.Decode(newToken);
+                        return output;
+                    }
+                    catch (Exception)
+                    {
+                        Console.Error.WriteLine("Chat history: \r\n" + string.Join("\r\n", chatHistory.Select(c => c.Content)));
+                        throw;
+                    }
                 }, cancellationToken);
             }
 
