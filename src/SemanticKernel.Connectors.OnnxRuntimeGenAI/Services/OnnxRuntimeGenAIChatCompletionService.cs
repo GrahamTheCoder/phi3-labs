@@ -100,30 +100,29 @@ public sealed class OnnxRuntimeGenAIChatCompletionService : IChatCompletionServi
         using var generator = new Generator(_model, generatorParams);
 
 
-        if (generator is not null)
-            while (!generator.IsDone())
+        while (!generator.IsDone())
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            yield return await Task.Run(() =>
             {
-                cancellationToken.ThrowIfCancellationRequested();
-
-                yield return await Task.Run(() =>
+                try
                 {
-                    try
-                    {
-                        generator.ComputeLogits();
-                        generator.GenerateNextToken();
+                    generator.ComputeLogits();
+                    generator.GenerateNextToken();
 
-                        var outputTokens = generator.GetSequence(0);
-                        var newToken = outputTokens.Slice(outputTokens.Length - 1, 1);
-                        var output = _tokenizer.Decode(newToken);
-                        return output;
-                    }
-                    catch (Exception)
-                    {
-                        Console.Error.WriteLine("Chat history: \r\n" + string.Join("\r\n", chatHistory.Select(c => c.Content)));
-                        throw;
-                    }
-                }, cancellationToken);
-            }
+                    var outputTokens = generator.GetSequence(0);
+                    var newToken = outputTokens.Slice(outputTokens.Length - 1, 1);
+                    var output = _tokenizer.Decode(newToken);
+                    return output;
+                }
+                catch (Exception)
+                {
+                    Console.Error.WriteLine("Chat history: \r\n" + string.Join("\r\n", chatHistory.Select(c => c.Content)));
+                    throw;
+                }
+            }, cancellationToken);
+        }
 
     }
 
